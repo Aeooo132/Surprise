@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Love</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        body {
+            /* Gradient: Gold -> White -> Pink */
+            background: linear-gradient(135deg, #f6d365 0%, #ffffff 50%, #ff9a9e 100%);
+            /* min-height ensures scrolling works on mobile if content is tall */
+            min-height: 100vh; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px; /* Add padding so card doesn't touch screen edges */
+        }
+        
+        .card {
+            border: 2px solid #f6d365;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.95);
+            max-width: 500px;
+            width: 100%;
+            /* Fix for mobile: automatic margin handling */
+            margin: 0 auto; 
+        }
+
+        .hidden-content {
+            display: none;
+        }
+
+        .heart-beat {
+            animation: pulse 1.5s infinite;
+            color: #ff4757;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Lovely Button Style */
+        .btn-valentine {
+            background: linear-gradient(45deg, #ff6b81, #ff4757);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-valentine:hover {
+            background: linear-gradient(45deg, #ff4757, #ff6b81);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
+        }
+        
+        /* Modal Styles */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        .custom-modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 2px solid #f6d365;
+            width: 100%;
+            max-width: 350px; /* Prevent modal from getting too wide */
+            animation: fadeIn 0.3s;
+        }
+
+        /* --- MOBILE SPECIFIC TWEAKS --- */
+        @media (max-width: 576px) {
+            .display-1 {
+                font-size: 4rem; /* Smaller heart on mobile */
+            }
+            h2 {
+                font-size: 1.5rem; /* Smaller header */
+            }
+            .lead {
+                font-size: 1rem; /* Readable body text */
+            }
+            .card {
+                padding: 1.5rem !important; /* Reduce padding on mobile */
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="w-100 d-flex justify-content-center">
+        
+        <div id="loginSection" class="card p-4 p-md-5 text-center animate__animated animate__fadeInDown">
+            <h3 class="mb-4">Security Check 🔒</h3>
+            <p class="text-muted mb-4">To verify it's really you, please answer this:</p>
+            
+            <div class="mb-4">
+                <label for="securityAnswer" class="form-label fw-bold">What is the name of the book I read to you at night?</label>
+                <input type="text" class="form-control text-center" id="securityAnswer" placeholder="Type answer here..." style="border-radius: 20px;">
+            </div>
+            
+            <button onclick="checkAnswer()" class="btn btn-dark w-100 rounded-pill">Unlock</button>
+            <p id="errorMsg" class="text-danger mt-3 fw-bold" style="display:none;">Incorrect! Try again.</p>
+        </div>
+
+        <div id="proposalSection" class="hidden-content card p-4 p-md-5 text-center">
+            <h1 class="animate__animated animate__heartBeat heart-beat display-1 mb-3">❤️</h1>
+            
+            <h2 class="animate__animated animate__fadeInUp animate__delay-1s">Hi Nengiiiii,</h2>
+            
+            <div class="lead mt-4 animate__animated animate__fadeIn animate__delay-2s">
+                <p>I knew you'd get that right. 😉</p>
+                <p>We've already said the words, but I wanted to write it down so it's here forever: <strong>I love you.</strong></p>
+                <p>From the moment we met, you've been the most special person in my life.</p>
+                <p>Talking with you, laughing together, and sharing all our dreams has made me realize how much you mean to me.</p>
+                <p>You make my world brighter and my heart fuller. I can't imagine my life without you in it.</p>
+                <p>So, with all my heart, I want to ask you:</p>
+            </div>
+
+            <hr class="my-4 animate__animated animate__fadeIn animate__delay-3s">
+
+            <h3 class="animate__animated animate__zoomIn animate__delay-4s fw-bold text-danger mb-4">
+                Will you be my girlfriend?
+            </h3>
+
+            <div class="animate__animated animate__fadeInUp animate__delay-5s">
+                <a href="https://wa.me/2348130481575?text=Yes%20I%20will!%20I%20love%20you%20too%20❤️" class="btn btn-valentine btn-lg w-100 mb-3">
+                    YES! 🌹
+                </a>
+                
+                <button onclick="showCheekyModal()" class="btn btn-sm btn-outline-secondary" style="font-size: 0.8rem; opacity: 0.6; border-radius: 20px;">
+                    No
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="cheekyModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h4 id="modalQuestion" class="mb-4">Are you sure?</h4>
+            <div class="d-flex justify-content-center gap-3">
+                <button onclick="increaseDoubt()" class="btn btn-danger rounded-pill px-4">Yes</button>
+                <button onclick="closeCheekyModal()" class="btn btn-secondary rounded-pill px-4">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // -- LOGIN LOGIC --
+        function checkAnswer() {
+            var input = document.getElementById('securityAnswer').value.toLowerCase().trim();
+            var correctAnswer = "the little prince"; 
+
+            if (input === correctAnswer) {
+                document.getElementById('loginSection').style.display = 'none';
+                var proposal = document.getElementById('proposalSection');
+                proposal.style.display = 'block';
+                proposal.classList.add('animate__animated', 'animate__fadeIn');
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                var loginBox = document.getElementById('loginSection');
+                loginBox.classList.remove('animate__fadeInDown'); 
+                loginBox.classList.add('animate__shakeX');
+                setTimeout(() => {
+                    loginBox.classList.remove('animate__shakeX');
+                }, 1000);
+            }
+        }
+
+        // -- CHEEKY BUTTON LOGIC --
+        let veryCount = 0;
+
+        function showCheekyModal() {
+            veryCount = 0;
+            document.getElementById('modalQuestion').innerText = "Are you sure?";
+            document.getElementById('cheekyModal').style.display = 'flex';
+        }
+
+        function closeCheekyModal() {
+            document.getElementById('cheekyModal').style.display = 'none';
+        }
+
+        function increaseDoubt() {
+            veryCount++;
+            var veryString = "very ".repeat(veryCount);
+            var newText = "Are you " + veryString + "sure?";
+            document.getElementById('modalQuestion').innerText = newText;
+        }
+    </script>
+</body>
+</html>
