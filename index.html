@@ -6,20 +6,38 @@
     <title>My Love</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         body {
             /* Gradient: Gold -> White -> Pink */
             background: linear-gradient(135deg, #f6d365 0%, #ffffff 50%, #ff9a9e 100%);
-            /* min-height ensures scrolling works on mobile if content is tall */
             min-height: 100vh; 
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px; /* Add padding so card doesn't touch screen edges */
+            padding: 20px; 
+            overflow-x: hidden; /* Important for full-screen animations */
+            position: relative;
         }
         
+        /* --- FLOATING HEARTS BACKGROUND --- */
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 71, 87, 0.2); /* Very faint red */
+            animation: floatUp linear infinite;
+            z-index: -1; /* Behind everything */
+            font-size: 2rem;
+            user-select: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
         .card {
             border: 2px solid #f6d365;
             border-radius: 20px;
@@ -27,8 +45,8 @@
             background-color: rgba(255, 255, 255, 0.95);
             max-width: 500px;
             width: 100%;
-            /* Fix for mobile: automatic margin handling */
             margin: 0 auto; 
+            z-index: 10; /* Keeps card above hearts */
         }
 
         .hidden-content {
@@ -46,7 +64,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Lovely Button Style */
         .btn-valentine {
             background: linear-gradient(45deg, #ff6b81, #ff4757);
             color: white;
@@ -86,24 +103,15 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             border: 2px solid #f6d365;
             width: 100%;
-            max-width: 350px; /* Prevent modal from getting too wide */
+            max-width: 350px; 
             animation: fadeIn 0.3s;
         }
 
-        /* --- MOBILE SPECIFIC TWEAKS --- */
         @media (max-width: 576px) {
-            .display-1 {
-                font-size: 4rem; /* Smaller heart on mobile */
-            }
-            h2 {
-                font-size: 1.5rem; /* Smaller header */
-            }
-            .lead {
-                font-size: 1rem; /* Readable body text */
-            }
-            .card {
-                padding: 1.5rem !important; /* Reduce padding on mobile */
-            }
+            .display-1 { font-size: 4rem; }
+            h2 { font-size: 1.5rem; }
+            .lead { font-size: 1rem; }
+            .card { padding: 1.5rem !important; }
         }
 
         @keyframes fadeIn {
@@ -114,6 +122,13 @@
 </head>
 <body>
 
+    <div id="heartsContainer"></div>
+
+    <audio id="loveSong" loop>
+        <source src="song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <div class="w-100 d-flex justify-content-center">
         
         <div id="loginSection" class="card p-4 p-md-5 text-center animate__animated animate__fadeInDown">
@@ -121,7 +136,7 @@
             <p class="text-muted mb-4">To verify it's really you, please answer this:</p>
             
             <div class="mb-4">
-                <label for="securityAnswer" class="form-label fw-bold">What is the name of the book I read to you at night?</label>
+                <label for="securityAnswer" class="form-label fw-bold">What is the name I call you?</label>
                 <input type="text" class="form-control text-center" id="securityAnswer" placeholder="Type answer here..." style="border-radius: 20px;">
             </div>
             
@@ -132,14 +147,17 @@
         <div id="proposalSection" class="hidden-content card p-4 p-md-5 text-center">
             <h1 class="animate__animated animate__heartBeat heart-beat display-1 mb-3">❤️</h1>
             
-            <h2 class="animate__animated animate__fadeInUp animate__delay-1s">Hi Nengiiiii,</h2>
+            <h2 class="animate__animated animate__fadeInUp animate__delay-1s">Heyyy Princess,</h2>
             
             <div class="lead mt-4 animate__animated animate__fadeIn animate__delay-2s">
-                <p>I knew you'd get that right. 😉</p>
-                <p>We've already said the words, but I wanted to write it down so it's here forever: <strong>I love you.</strong></p>
-                <p>From the moment we met, you've been the most special person in my life.</p>
+                <p>I know I tell you that I love you very often, but I wanted to do something that shows I mean it.</p>
+                <p><strong>I love you</strong> and I want to always love you.</p>
+                <p>I could say how much you mean to me but I would never stop talking bout it.</p>
                 <p>Talking with you, laughing together, and sharing all our dreams has made me realize how much you mean to me.</p>
-                <p>You make my world brighter and my heart fuller. I can't imagine my life without you in it.</p>
+                <p>I am painfully aware that there's a lot about you that I don't know yet, even at that I am determined to learn more about you.</p>
+                <p>I really want to grow with you and love you, I want to "Baby" you, I want to be the first person you run to when the going gets tough.</p>
+                <p>I want to be there for you, to support you, and to make you smile every single day.</p>
+                <p>I want to be there to cuddle you and make you feel at ease. I want to be your safe place.</p>
                 <p>So, with all my heart, I want to ask you:</p>
             </div>
 
@@ -173,12 +191,42 @@
     </div>
 
     <script>
-        // -- LOGIN LOGIC --
+        // --- 1. FLOATING HEARTS GENERATOR ---
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const heartCount = 15; // Number of hearts on screen
+            
+            for(let i=0; i<heartCount; i++){
+                let heart = document.createElement('div');
+                heart.innerHTML = '❤';
+                heart.classList.add('floating-heart');
+                
+                // Randomize position and animation properties
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 5) + 's'; 
+                heart.style.animationDelay = Math.random() * 5 + 's'; 
+                heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+                
+                container.appendChild(heart);
+            }
+        }
+        createHearts(); // Run immediately
+
+        // --- 2. LOGIN LOGIC ---
         function checkAnswer() {
             var input = document.getElementById('securityAnswer').value.toLowerCase().trim();
-            var correctAnswer = "the little prince"; 
+            var correctAnswer = "my princess"; 
 
             if (input === correctAnswer) {
+                // Play Audio
+                var song = document.getElementById('loveSong');
+                song.volume = 0.6; // Set volume to 60%
+                song.play().catch(error => console.log("Autoplay blocked, user interaction needed first"));
+
+                // TRIGGER CONFETTI
+                triggerConfetti();
+
+                // Hide Login / Show Proposal
                 document.getElementById('loginSection').style.display = 'none';
                 var proposal = document.getElementById('proposalSection');
                 proposal.style.display = 'block';
@@ -194,7 +242,31 @@
             }
         }
 
-        // -- CHEEKY BUTTON LOGIC --
+        // --- 3. CONFETTI EFFECT ---
+        function triggerConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                // since particles fall down, start a bit higher than random
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // --- 4. CHEEKY BUTTON LOGIC ---
         let veryCount = 0;
 
         function showCheekyModal() {
