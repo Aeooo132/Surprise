@@ -10,7 +10,6 @@
     
     <style>
         body {
-            /* Gradient: Gold -> White -> Pink */
             background: linear-gradient(135deg, #f6d365 0%, #ffffff 50%, #ff9a9e 100%);
             min-height: 100vh; 
             display: flex;
@@ -18,16 +17,15 @@
             justify-content: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding: 20px; 
-            overflow-x: hidden; /* Important for full-screen animations */
+            overflow-x: hidden; 
             position: relative;
         }
         
-        /* --- FLOATING HEARTS BACKGROUND --- */
         .floating-heart {
             position: absolute;
-            color: rgba(255, 71, 87, 0.2); /* Very faint red */
+            color: rgba(255, 71, 87, 0.2); 
             animation: floatUp linear infinite;
-            z-index: -1; /* Behind everything */
+            z-index: -1; 
             font-size: 2rem;
             user-select: none;
         }
@@ -46,17 +44,11 @@
             max-width: 500px;
             width: 100%;
             margin: 0 auto; 
-            z-index: 10; /* Keeps card above hearts */
+            z-index: 10; 
         }
 
-        .hidden-content {
-            display: none;
-        }
-
-        .heart-beat {
-            animation: pulse 1.5s infinite;
-            color: #ff4757;
-        }
+        .hidden-content { display: none; }
+        .heart-beat { animation: pulse 1.5s infinite; color: #ff4757; }
 
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -80,32 +72,6 @@
             transform: scale(1.05);
             box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
         }
-        
-        /* Modal Styles */
-        .custom-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-        }
-        .custom-modal-box {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            border: 2px solid #f6d365;
-            width: 100%;
-            max-width: 350px; 
-            animation: fadeIn 0.3s;
-        }
 
         @media (max-width: 576px) {
             .display-1 { font-size: 4rem; }
@@ -113,42 +79,29 @@
             .lead { font-size: 1rem; }
             .card { padding: 1.5rem !important; }
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
     </style>
 </head>
 <body>
 
     <div id="heartsContainer"></div>
-
-    <audio id="loveSong" loop>
-        <source src="song.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <audio id="loveSong" loop><source src="song.mp3" type="audio/mpeg"></audio>
 
     <div class="w-100 d-flex justify-content-center">
         
         <div id="loginSection" class="card p-4 p-md-5 text-center animate__animated animate__fadeInDown">
             <h3 class="mb-4">Security Check 🔒</h3>
             <p class="text-muted mb-4">To verify it's really you, please answer this:</p>
-            
             <div class="mb-4">
                 <label for="securityAnswer" class="form-label fw-bold">What is the name I call you?</label>
                 <input type="text" class="form-control text-center" id="securityAnswer" placeholder="Type answer here..." style="border-radius: 20px;">
             </div>
-            
             <button onclick="checkAnswer()" class="btn btn-dark w-100 rounded-pill">Unlock</button>
             <p id="errorMsg" class="text-danger mt-3 fw-bold" style="display:none;">Incorrect! Try again.</p>
         </div>
 
         <div id="proposalSection" class="hidden-content card p-4 p-md-5 text-center">
             <h1 class="animate__animated animate__heartBeat heart-beat display-1 mb-3">❤️</h1>
-            
             <h2 class="animate__animated animate__fadeInUp animate__delay-1s">Heyyy Princess,</h2>
-            
             <div class="lead mt-4 animate__animated animate__fadeIn animate__delay-2s">
                 <p>I know I tell you that I love you very often, but I wanted to do something that shows I mean it.</p>
                 <p><strong>I love you</strong> and I want to always love you.</p>
@@ -160,73 +113,64 @@
                 <p>I want to be there to cuddle you and make you feel at ease. I want to be your safe place.</p>
                 <p>So, with all my heart, I want to ask you:</p>
             </div>
-
             <hr class="my-4 animate__animated animate__fadeIn animate__delay-3s">
-
             <h3 class="animate__animated animate__zoomIn animate__delay-4s fw-bold text-danger mb-4">
                 Will you be my girlfriend?
             </h3>
-
-            <div class="animate__animated animate__fadeInUp animate__delay-5s">
-                <a href="https://wa.me/2348130481575?text=Yes%20I%20will!%20I%20love%20you%20too%20❤️" class="btn btn-valentine btn-lg w-100 mb-3">
+            <div class="animate__animated animate__fadeInUp animate__delay-5s d-flex flex-column gap-3">
+                <button onclick="submitChoice('Yes')" id="btnYes" class="btn btn-valentine btn-lg w-100">
                     YES! 🌹
-                </a>
-                
-                <button onclick="showCheekyModal()" class="btn btn-sm btn-outline-secondary" style="font-size: 0.8rem; opacity: 0.6; border-radius: 20px;">
-                    No
+                </button>
+                <button onclick="submitChoice('No')" id="btnNo" class="btn btn-outline-secondary w-100 rounded-pill" style="font-weight: bold;">
+                    No, I'm sorry
                 </button>
             </div>
         </div>
 
-    </div>
+        <div id="responseYes" class="hidden-content card p-4 p-md-5 text-center">
+            <h1 class="animate__animated animate__tada display-1 mb-3">🥰</h1>
+            <h2 class="text-danger fw-bold">You just made me the happiest man!</h2>
+            <p class="lead mt-3">I can't wait to officially start this chapter with you.</p>
+            <p class="text-muted mt-4">(I've just received a text telling me your answer! I'll call you in a bit. ❤️)</p>
+        </div>
 
-    <div id="cheekyModal" class="custom-modal-overlay">
-        <div class="custom-modal-box">
-            <h4 id="modalQuestion" class="mb-4">Are you sure?</h4>
-            <div class="d-flex justify-content-center gap-3">
-                <button onclick="increaseDoubt()" class="btn btn-danger rounded-pill px-4">Yes</button>
-                <button onclick="closeCheekyModal()" class="btn btn-secondary rounded-pill px-4">No</button>
+        <div id="responseNo" class="hidden-content card p-4 p-md-5 text-center">
+            <h1 class="animate__animated animate__fadeIn display-1 mb-3">🤍</h1>
+            <h2 class="fw-bold">I understand.</h2>
+            <div class="lead mt-3 text-start">
+                <p>I'm really glad that you at least considered it.</p>
+                <p>Please know that just because you said no, it doesn't mean I want to stop being friends. You mean a lot to me.</p>
+                <p>If I can't be in a relationship with you, I am more than happy to just stay your friend.</p>
             </div>
         </div>
+
     </div>
 
     <script>
-        // --- 1. FLOATING HEARTS GENERATOR ---
         function createHearts() {
             const container = document.getElementById('heartsContainer');
-            const heartCount = 15; // Number of hearts on screen
-            
-            for(let i=0; i<heartCount; i++){
+            for(let i=0; i<15; i++){
                 let heart = document.createElement('div');
                 heart.innerHTML = '❤';
                 heart.classList.add('floating-heart');
-                
-                // Randomize position and animation properties
                 heart.style.left = Math.random() * 100 + 'vw';
                 heart.style.animationDuration = (Math.random() * 3 + 5) + 's'; 
                 heart.style.animationDelay = Math.random() * 5 + 's'; 
                 heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
-                
                 container.appendChild(heart);
             }
         }
-        createHearts(); // Run immediately
+        createHearts(); 
 
-        // --- 2. LOGIN LOGIC ---
         function checkAnswer() {
             var input = document.getElementById('securityAnswer').value.toLowerCase().trim();
             var correctAnswer = "my princess"; 
 
             if (input === correctAnswer) {
-                // Play Audio
                 var song = document.getElementById('loveSong');
-                song.volume = 0.6; // Set volume to 60%
-                song.play().catch(error => console.log("Autoplay blocked, user interaction needed first"));
-
-                // TRIGGER CONFETTI
+                song.volume = 0.6; 
+                song.play().catch(e => console.log("Autoplay blocked"));
                 triggerConfetti();
-
-                // Hide Login / Show Proposal
                 document.getElementById('loginSection').style.display = 'none';
                 var proposal = document.getElementById('proposalSection');
                 proposal.style.display = 'block';
@@ -236,54 +180,50 @@
                 var loginBox = document.getElementById('loginSection');
                 loginBox.classList.remove('animate__fadeInDown'); 
                 loginBox.classList.add('animate__shakeX');
-                setTimeout(() => {
-                    loginBox.classList.remove('animate__shakeX');
-                }, 1000);
+                setTimeout(() => { loginBox.classList.remove('animate__shakeX'); }, 1000);
             }
         }
 
-        // --- 3. CONFETTI EFFECT ---
         function triggerConfetti() {
             var duration = 3 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
-
             var interval = setInterval(function() {
                 var timeLeft = animationEnd - Date.now();
-
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
-                }
-
+                if (timeLeft <= 0) return clearInterval(interval);
                 var particleCount = 50 * (timeLeft / duration);
-                // since particles fall down, start a bit higher than random
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: (Math.random() * 0.2) + 0.1, y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: (Math.random() * 0.2) + 0.7, y: Math.random() - 0.2 } }));
             }, 250);
         }
 
-        function randomInRange(min, max) {
-            return Math.random() * (max - min) + min;
-        }
-
-        // --- 4. CHEEKY BUTTON LOGIC ---
-        let veryCount = 0;
-
-        function showCheekyModal() {
-            veryCount = 0;
-            document.getElementById('modalQuestion').innerText = "Are you sure?";
-            document.getElementById('cheekyModal').style.display = 'flex';
-        }
-
-        function closeCheekyModal() {
-            document.getElementById('cheekyModal').style.display = 'none';
-        }
-
-        function increaseDoubt() {
-            veryCount++;
-            var veryString = "very ".repeat(veryCount);
-            var newText = "Are you " + veryString + "sure?";
-            document.getElementById('modalQuestion').innerText = newText;
+        // --- BACKEND NOTIFICATION TRIGGER ---
+        function submitChoice(choice) {
+            document.getElementById('btnYes').disabled = true;
+            document.getElementById('btnNo').disabled = true;
+            
+            // Send the choice to our secure Vercel API
+            fetch('/api/notify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ choice: choice })
+            })
+            .then(response => console.log("Notification sent successfully"))
+            .catch(error => console.error("Error sending notification", error))
+            .finally(() => {
+                document.getElementById('proposalSection').style.display = 'none';
+                
+                if(choice === 'Yes') {
+                    triggerConfetti();
+                    var resYes = document.getElementById('responseYes');
+                    resYes.style.display = 'block';
+                    resYes.classList.add('animate__animated', 'animate__fadeIn');
+                } else {
+                    var resNo = document.getElementById('responseNo');
+                    resNo.style.display = 'block';
+                    resNo.classList.add('animate__animated', 'animate__fadeIn');
+                }
+            });
         }
     </script>
 </body>
